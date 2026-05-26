@@ -78,7 +78,7 @@ with col_ev2:
     st.caption("**Root Mean Squared Error:** Memberikan hukuman (penalti) yang lebih besar untuk error/kesalahan prediksi yang jaraknya terlalu jauh.")
 
 with col_ev3:
-    st.metric(label="R-Squared (R² Score)", value=f"{r2*100:.1f}%")
+    st.metric(label="R-Squared (R² Score)", value=f"{r2*100:.2f}%")
     st.caption("**R² Score:** Mengukur seberapa baik variabel independen (durasi belajar, sosmed, dll) mampu menjelaskan variasi dari skor ujian.")
 
 st.markdown("*(Hasil perhitungan metrik-metrik di atas dapat dilihat secara real-time pada menu Evaluasi Model).*")
