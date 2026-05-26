@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from utils.helper import load_data, train_model
 
 st.set_page_config(page_title="Manipulasi Data", page_icon="⚙️", layout="wide")
 
@@ -13,7 +14,7 @@ except FileNotFoundError:
     st.stop()
 
 
-st.header(" Penentuan Tujuan Sistem (Target Variable)")
+st.header("Penentuan Tujuan Sistem (Target Variable)")
 st.info("🎯 **Target Prediksi:** Kolom `exam_score` (Nilai Ujian)")
 st.markdown("""
 Dari dua jenis pendekatan Machine Learning, sistem ini memilih **Regresi (Memprediksi Angka Eksak)**. 
@@ -32,7 +33,6 @@ with c1:
     st.markdown("Kolom `student_id` dibuang (*drop*) karena hanya berupa ID unik identitas dan tidak memiliki nilai prediktif. Jika dibiarkan, kolom ini wajib dieliminasi agar tidak membingungkan model.")
 
     st.warning("⚠️ **Tangani Data Kosong (Missing Values)**")
-    # Mengecek jumlah data kosong di parental_education_level
     missing_edu = df_raw['parental_education_level'].isna().sum() if 'parental_education_level' in df_raw.columns else 91
     st.markdown(f"Terdeteksi **{missing_edu} baris kosong (*null/NaN*)** pada kolom `parental_education_level`. Baris ini tidak dibiarkan atau dibuang. Sistem mengisinya menggunakan metode imputasi untuk mempertahankan total 1000 baris data.")
 
@@ -45,7 +45,7 @@ with c2:
     """)
 
     st.error("⚖️ **Normalisasi (Scaling) & Augmentasi**")
-    st.markdown("Terdapat perbedaan rentang nilai (contoh: `attendance` bernilai puluhan/ratusan, sedangkan `netflix_hours` hanya satuan kecil). Sistem juga menyuntikkan *Gaussian Noise* (Augmentasi) untuk mencegah *overfitting*.")
+    st.markdown("Terdapat perbedaan rentang nilai (contoh: `attendance` bernilai puluhan/ratusan, sedangkan `netflix_hours` hanya satuan angka kecil). Sistem juga menyuntikkan *Gaussian Noise* (Augmentasi) untuk mencegah *overfitting*.")
 
 st.markdown("---")
 
@@ -64,18 +64,21 @@ st.markdown("---")
 st.header("Evaluasi yang Digunakan")
 st.markdown("Karena berjalan di rute **Regresi**, metrik 'Akurasi' tradisional tidak relevan. Kinerja sistem diukur menggunakan metrik spesifik regresi:")
 
+df_clean = load_data()
+model, features, r2, mae, rmse, cv_mean = train_model(df_clean)
+
 col_ev1, col_ev2, col_ev3 = st.columns(3)
 
 with col_ev1:
-    st.metric(label="Metrik 1", value="MAE")
+    st.metric(label="Mean Absolute Error (MAE)", value=f"{mae:.2f} Poin")
     st.caption("**Mean Absolute Error:** Rata-rata selisih prediksi tebakan AI dengan nilai aslinya di lapangan.")
 
 with col_ev2:
-    st.metric(label="Metrik 2", value="RMSE")
+    st.metric(label="Root Mean Squared Error (RMSE)", value=f"{rmse:.2f} Poin")
     st.caption("**Root Mean Squared Error:** Memberikan hukuman (penalti) yang lebih besar untuk error/kesalahan prediksi yang jaraknya terlalu jauh.")
 
 with col_ev3:
-    st.metric(label="Metrik 3", value="R-Squared")
+    st.metric(label="R-Squared (R² Score)", value=f"{r2*100:.1f}%")
     st.caption("**R² Score:** Mengukur seberapa baik variabel independen (durasi belajar, sosmed, dll) mampu menjelaskan variasi dari skor ujian.")
 
 st.markdown("*(Hasil perhitungan metrik-metrik di atas dapat dilihat secara real-time pada menu Evaluasi Model).*")
