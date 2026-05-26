@@ -6,7 +6,7 @@ st.set_page_config(page_title="Visualisasi Data", page_icon="📊", layout="wide
 df = load_data()
 
 with st.sidebar:
-    st.markdown("### 🎛️ Filter Kontrol")
+    st.markdown("🎛️ Filter Kontrol")
     selected_gender = st.multiselect("Pilih Gender:", options=df['gender'].unique(), default=df['gender'].unique())
     selected_olahraga = st.multiselect("Kualitas Olahraga:", options=df['kualitas_olahraga'].unique(), default=df['kualitas_olahraga'].unique())
 
@@ -28,7 +28,7 @@ with col2:
                       template="plotly_white", color_discrete_map={"Buruk": "red", "Cukup": "orange", "Baik": "green"})
     st.plotly_chart(fig2, use_container_width=True)
 
-st.markdown("Distribusi Skor Ujian Berdasarkan Olahraga")
+st.markdown("Distribusi Nilai Ujian Berdasarkan Olahraga")
 fig3 = px.box(df_filtered, x="kualitas_olahraga", y="exam_score", color="kualitas_olahraga",
               category_orders={"kualitas_olahraga": ["Buruk", "Cukup", "Baik"]},
               color_discrete_map={"Buruk": "red", "Cukup": "orange", "Baik": "green"})
