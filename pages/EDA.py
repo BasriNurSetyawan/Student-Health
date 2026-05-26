@@ -8,13 +8,25 @@ df = load_data()
 
 with st.sidebar:
     st.markdown("### 🎛️ Filter Data")
-    selected_gender = st.multiselect("Pilih Gender:", options=df['gender'].unique(), default=df['gender'].unique())
-    selected_diet = st.multiselect("Kualitas Diet:", options=df['diet_quality'].unique(), default=df['diet_quality'].unique())
+    selected_gender = st.multiselect(
+        "Pilih Gender:", 
+        options=df['gender'].unique(), 
+        default=df['gender'].unique()
+    )
+    
+    selected_olahraga = st.multiselect(
+        "Kualitas Olahraga:", 
+        options=df['kualitas_olahraga'].unique(), 
+        default=df['kualitas_olahraga'].unique()
+    )
 
-df_filtered = df[(df['gender'].isin(selected_gender)) & (df['diet_quality'].isin(selected_diet))]
+df_filtered = df[
+    (df['gender'].isin(selected_gender)) & 
+    (df['kualitas_olahraga'].isin(selected_olahraga))
+]
 
 st.title("📊 Exploratory Data Analysis (EDA)")
-st.markdown("Menganalisis faktor-faktor yang paling mempengaruhi skor ujian.")
+st.markdown("Menganalisis faktor-faktor kebiasaan yang paling mempengaruhi skor ujian.")
 
 col1, col2 = st.columns(2)
 
@@ -32,16 +44,19 @@ with col2:
     st.markdown("#### Nonton Netflix vs Nilai Ujian")
     fig_netflix = px.scatter(
         df_filtered, x="netflix_hours", y="exam_score", 
-        color="extracurricular_participation", 
+        color="kualitas_olahraga", 
         template="plotly_white",
-        labels={"netflix_hours": "Jam Netflix/Hari", "exam_score": "Nilai Ujian"}
+        labels={"netflix_hours": "Jam Netflix/Hari", "exam_score": "Nilai Ujian"},
+        color_discrete_map={"Buruk": "red", "Cukup": "orange", "Baik": "green"}
     )
     st.plotly_chart(fig_netflix, use_container_width=True)
 
 st.markdown("---")
-st.markdown("#### Distribusi Nilai Ujian Berdasarkan Diet & Olahraga")
+st.markdown("#### Distribusi Nilai Ujian Berdasarkan Kualitas Olahraga")
 fig_box = px.box(
-    df_filtered, x="diet_quality", y="exam_score", color="part_time_job",
-    title="Pengaruh Pola Makan dan Kerja Part-Time Terhadap Nilai Ujian"
+    df_filtered, x="kualitas_olahraga", y="exam_score", color="kualitas_olahraga",
+    title="Apakah Mahasiswa yang Sering Olahraga Punya Nilai Lebih Baik?",
+    category_orders={"kualitas_olahraga": ["Buruk", "Cukup", "Baik"]},
+    color_discrete_map={"Buruk": "red", "Cukup": "orange", "Baik": "green"}
 )
 st.plotly_chart(fig_box, use_container_width=True)
