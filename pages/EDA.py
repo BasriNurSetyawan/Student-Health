@@ -6,7 +6,6 @@ st.set_page_config(page_title="Visualisasi Data", page_icon="📊", layout="wide
 
 df = load_data()
 
-# Filter Interaktif di Sidebar
 with st.sidebar:
     st.markdown("### 🎛️ Filter Data")
     
