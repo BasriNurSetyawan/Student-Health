@@ -2,53 +2,46 @@ import streamlit as st
 import pandas as pd
 from utils.helper import load_data, train_model
 
-st.set_page_config(page_title="Prediksi AI", page_icon="🔥", layout="wide")
+st.set_page_config(page_title="Prediksi Skor Ujian", page_icon="📈", layout="wide")
 
 df = load_data()
-model, le, features, accuracy = train_model(df)
+model, features, accuracy = train_model(df)
 
-st.title("🔥 AI Prediktor Burnout (Real-Time)")
-st.markdown("Ubah slider parameter di bawah ini. AI Random Forest akan langsung menganalisis tingkat Burnout mahasiswa.")
+st.title("📈 AI Prediktor Nilai Ujian")
+st.markdown("Atur kebiasaan mahasiswa di bawah ini. AI Random Forest Regressor akan menebak berapa **Skor Ujian** yang akan didapat!")
 
-st.info(f"🤖 Model Machine Learning Aktif (Akurasi: {accuracy*100:.1f}%)")
+st.info(f"🤖 Model AI Aktif (R2 Score / Akurasi Prediksi: {accuracy*100:.1f}%)")
 
 c_in1, c_in2, c_in3 = st.columns(3)
 
 with c_in1:
-    p_age = st.number_input("Usia (Tahun)", 17, 30, 21)
-    p_study = st.slider("Jam Belajar Harian", 0.0, 15.0, 5.0)
-    p_sleep = st.slider("Jam Tidur Harian", 0.0, 15.0, 6.0)
+    p_study = st.slider("Jam Belajar (Harian)", 0.0, 10.0, 3.5)
+    p_attend = st.slider("Persentase Kehadiran (%)", 50.0, 100.0, 85.0)
 
 with c_in2:
-    p_screen = st.slider("Screen Time Harian", 0.0, 18.0, 8.0)
-    p_anxiety = st.slider("Skor Kecemasan (1-10)", 1.0, 10.0, 6.0)
+    p_sosmed = st.slider("Main Sosmed (Harian)", 0.0, 10.0, 2.5)
+    p_netflix = st.slider("Nonton Netflix (Harian)", 0.0, 8.0, 1.5)
     
 with c_in3:
-    p_depress = st.slider("Skor Depresi (1-10)", 1.0, 10.0, 5.0)
-    p_acad = st.slider("Tekanan Akademik (1-10)", 1.0, 10.0, 7.0)
-    p_fin = st.slider("Stres Finansial (1-10)", 1.0, 10.0, 4.0)
+    p_sleep = st.slider("Jam Tidur", 3.0, 12.0, 7.0)
+    p_mental = st.slider("Rating Mental Health (1-10)", 1, 10, 5)
 
-#Prediksi AI
-input_df = pd.DataFrame([[p_age, p_study, p_sleep, p_screen, p_anxiety, p_depress, p_acad, p_fin]], columns=features)
-pred_idx = model.predict(input_df)[0]
-pred_label = le.inverse_transform([pred_idx])[0]
-probs = model.predict_proba(input_df)[0] 
+# EKSEKUSI AI
+input_df = pd.DataFrame([[p_study, p_sosmed, p_netflix, p_attend, p_sleep, p_mental]], columns=features)
+pred_score = model.predict(input_df)[0]
 
 st.markdown("---")
-st.subheader("🎯 Hasil Analisis AI:")
+st.subheader("🎯 Hasil Prediksi AI:")
 
-col_hasil, col_prob = st.columns([1, 2])
+col_hasil, _ = st.columns([1, 1])
 
 with col_hasil:
-    if pred_label == 'Low': 
-        st.success(f"### Level Burnout:\n### {pred_label} 🟢")
-    elif pred_label == 'Medium': 
-        st.warning(f"### Level Burnout:\n### {pred_label} 🟡")
-    else: 
-        st.error(f"### Level Burnout:\n### {pred_label} 🔴")
-        
-with col_prob:
-    st.markdown("**Confidence Score (Tingkat Keyakinan Model):**")
-    for cls, prb in zip(le.classes_, probs):
-        if prb > 0: 
-            st.progress(float(prb), text=f"{cls} Burnout ({prb*100:.1f}%)")
+    st.metric("Estimasi Skor Ujian:", f"{pred_score:.1f} / 100")
+    
+    #feedback logic berdasarkan nilai
+    if pred_score >= 80:
+        st.success("✅ **Sangat Baik!** Gaya hidup ini berpotensi menghasilkan skor yang tinggi.")
+    elif pred_score >= 60:
+        st.warning("🟡 **Cukup.** Masih bisa ditingkatkan dengan mengurangi sosmed/netflix atau menambah jam belajar.")
+    else:
+        st.error("🔴 **Berbahaya.** Dengan pola ini, risiko gagal ujian sangat besar.")
