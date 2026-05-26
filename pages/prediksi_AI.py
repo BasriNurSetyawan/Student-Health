@@ -10,7 +10,7 @@ model, features, accuracy = train_model(df)
 st.title("📈 AI Prediktor Nilai Ujian")
 st.markdown("Atur pola hidup mahasiswa di bawah ini. AI akan menebak secara *real-time* berapa **Estimasi Nilai Ujian** yang didapat!")
 
-st.info(f"🤖 Model AI Regresi Aktif (Akurasi R2 Score: {accuracy*100:.1f}%)")
+st.info(f" Model AI Aktif (Akurasi R2 Score: {accuracy*100:.1f}%)")
 
 c_in1, c_in2, c_in3 = st.columns(3)
 
@@ -40,8 +40,8 @@ with col_hasil:
     st.metric("Estimasi Skor Ujian:", f"{pred_score:.1f} / 100")
     
     if pred_score >= 80:
-        st.success("✅ **Sangat Baik!** Gaya hidup ini berpotensi menghasilkan skor yang tinggi.")
+        st.success("✅ **Sangat Baik!** Gaya hidup ini berpotensi menghasilkan nilai yang tinggi.")
     elif pred_score >= 60:
-        st.warning("🟡 **Cukup.** Masih bisa ditingkatkan dengan mengurangi layar atau menambah jam belajar.")
+        st.warning("🟡 **Cukup.** Masih bisa ditingkatkan dengan mengurangi netflix dan scroll atau menambah jam belajar.")
     else:
-        st.error("🔴 **Berbahaya.** Dengan pola ini, risiko gagal ujian cukup besar.")
+        st.error("🔴 **Berbahaya.** Pola HIDUP SEPERTI LARRY.")
