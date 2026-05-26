@@ -28,9 +28,7 @@ with c_in3:
     p_acad = st.slider("Tekanan Akademik (1-10)", 1.0, 10.0, 7.0)
     p_fin = st.slider("Stres Finansial (1-10)", 1.0, 10.0, 4.0)
 
-# ====================
-# EKSEKUSI AI
-# ====================
+#Prediksi AI
 input_df = pd.DataFrame([[p_age, p_study, p_sleep, p_screen, p_anxiety, p_depress, p_acad, p_fin]], columns=features)
 pred_idx = model.predict(input_df)[0]
 pred_label = le.inverse_transform([pred_idx])[0]
