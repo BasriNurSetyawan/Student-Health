@@ -8,20 +8,18 @@ from sklearn.model_selection import train_test_split
 def load_data():
     try:
         df = pd.read_csv('student_mental_health_burnout.csv')
-        # Buang data yang kosong dan dobel biar valid!
         return df.dropna().drop_duplicates()
     except FileNotFoundError:
         return None
 
 @st.cache_resource
 def train_model(df):
-    # Fitur (kolom) yang dipakai buat nebak
     features = ['age', 'daily_study_hours', 'daily_sleep_hours', 
                 'screen_time_hours', 'anxiety_score', 'depression_score', 
                 'academic_pressure_score', 'financial_stress_score']
     
     X = df[features].copy()
-    y = df['burnout_level'].copy() # Targetnya: Low, Medium, High
+    y = df['burnout_level'].copy()
     
     le = LabelEncoder()
     y_encoded = le.fit_transform(y)
