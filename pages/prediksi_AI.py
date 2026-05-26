@@ -37,11 +37,11 @@ st.subheader("🎯 Hasil Prediksi AI:")
 col_hasil, _ = st.columns([1, 1])
 
 with col_hasil:
-    st.metric("Estimasi Skor Ujian:", f"{pred_score:.1f} / 100")
+    st.metric("Estimasi Nilai Ujian:", f"{pred_score:.1f} / 100")
     
     if pred_score >= 80:
         st.success("✅ **Sangat Baik!** Gaya hidup ini berpotensi menghasilkan nilai yang tinggi.")
     elif pred_score >= 60:
         st.warning("🟡 **Cukup.** Masih bisa ditingkatkan dengan mengurangi netflix dan scroll atau menambah jam belajar.")
     else:
-        st.error("🔴 **Berbahaya.** Pola HIDUP SEPERTI LARRY.")
+        st.error("🔴 **Berbahaya.** Pola HIDUP SEPERTI LARRY!!!")
