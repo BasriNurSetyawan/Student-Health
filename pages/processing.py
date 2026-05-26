@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 
 st.set_page_config(page_title="Manipulasi Data", page_icon="⚙️", layout="wide")
 
-st.title("⚙️ Transparansi Manipulasi & Pengolahan Data")
-st.markdown("Dokumentasi detail mengenai *Preprocessing*, *Feature Engineering*, *Selection*, dan *Augmentation*.")
+st.title("⚙️ Tahapan Pra-pemrosesan Data (Data Preprocessing)")
+st.markdown("Halaman ini mendokumentasikan analisis struktur dataset `student_habits_performance.csv` serta langkah-langkah pra-pemrosesan yang dilakukan sebelum data dimasukkan ke dalam model Machine Learning.")
 
 try:
     df_raw = pd.read_csv('student_habits_performance.csv')
@@ -14,78 +13,69 @@ except FileNotFoundError:
     st.stop()
 
 
-st.header("Imputasi Missing Values")
-col_na1, col_na2 = st.columns([1, 2])
+st.header(" Penentuan Tujuan Sistem (Target Variable)")
+st.info("🎯 **Target Prediksi:** Kolom `exam_score` (Nilai Ujian)")
+st.markdown("""
+Dari dua jenis pendekatan Machine Learning, sistem ini memilih **Regresi (Memprediksi Angka Eksak)**. 
+Alih-alih menyederhanakan target menjadi Klasifikasi (kategori "Lulus" atau "Gagal"), algoritma dilatih untuk menebak skor pasti secara spesifik (contoh: memprediksi siswa akan mendapat nilai 85.5).
+""")
 
-missing_data = df_raw.isna().sum()
-missing_cols = missing_data[missing_data > 0]
+st.markdown("---")
 
-with col_na1:
-    st.error(f"**Data Mentah Awal:** {len(df_raw)} Baris")
-    if not missing_cols.empty:
-        st.write("🚨 Terdeteksi Kolom Kosong:")
-        for col, count in missing_cols.items():
-            st.write(f"- `{col}`: Hilang {count} data")
+st.header("Pra-pemrosesan Data (Data Preprocessing)")
+st.markdown("Langkah krusial untuk membersihkan dan menyiapkan data tabular sebelum dilatih oleh algoritma:")
 
-with col_na2:
-    st.success("**Metode: Forward Fill (ffill)**")
+c1, c2 = st.columns(2)
+
+with c1:
+    st.success("🗑️ **Buang Kolom yang Tidak Relevan**")
+    st.markdown("Kolom `student_id` dibuang (*drop*) karena hanya berupa ID unik identitas dan tidak memiliki nilai prediktif. Jika dibiarkan, kolom ini wajib dieliminasi agar tidak membingungkan model.")
+
+    st.warning("⚠️ **Tangani Data Kosong (Missing Values)**")
+    # Mengecek jumlah data kosong di parental_education_level
+    missing_edu = df_raw['parental_education_level'].isna().sum() if 'parental_education_level' in df_raw.columns else 91
+    st.markdown(f"Terdeteksi **{missing_edu} baris kosong (*null/NaN*)** pada kolom `parental_education_level`. Baris ini tidak dibiarkan atau dibuang. Sistem mengisinya menggunakan metode imputasi untuk mempertahankan total 1000 baris data.")
+
+with c2:
+    st.info("🔢 **Ubah Data Teks Menjadi Angka (Encoding)**")
+    st.markdown("Algoritma Machine Learning hanya mengerti angka. Oleh karena itu, kolom kategori teks dikonversi:")
     st.markdown("""
-    Sistem **tidak menghapus (drop)** baris yang kosong agar jumlah data tidak menyusut. Sistem mengisi data yang bolong dengan menduplikasi nilai dari baris sebelumnya secara berurutan. Hasilnya data kembali utuh 1.000 sampel.
+    - **Binary Encoding:** Mengubah `part_time_job` dan `extracurricular_participation` dari (Yes/No) menjadi (1/0).
+    - **Mapping Numerik:** Menerjemahkan tingkatan pada `diet_quality` dan rentang `exercise_frequency` menjadi susunan angka yang bisa diukur bobotnya.
     """)
 
-st.markdown("---")
-
-
-st.header("Feature Engineering & Encoding")
-c_fe1, c_fe2, c_fe3 = st.columns(3)
-
-with c_fe1:
-    st.info("💻 **Penggabungan Fitur (Screen Time)**")
-    st.markdown("Kolom `social_media_hours` + `netflix_hours` digabung jadi **`total_screen_time`** agar AI lebih fokus pada total durasi layar.")
-
-with c_fe2:
-    st.warning("🔢 **Label Encoding**")
-    st.markdown("Kolom `part_time_job` dan `extracurricular` yang berisi Yes/No dikonversi menjadi angka **1 dan 0** agar bisa dibaca algoritma.")
-
-with c_fe3:
-    st.success("🏃 **Binning (Olahraga)**")
-    st.markdown("Angka frekuensi olahraga dikelompokkan menjadi kategori ordinal: **Buruk (0-1), Cukup (2-3), Baik (4-6)**.")
+    st.error("⚖️ **Normalisasi (Scaling) & Augmentasi**")
+    st.markdown("Terdapat perbedaan rentang nilai (contoh: `attendance` bernilai puluhan/ratusan, sedangkan `netflix_hours` hanya satuan kecil). Sistem juga menyuntikkan *Gaussian Noise* (Augmentasi) untuk mencegah *overfitting*.")
 
 st.markdown("---")
 
-st.header("Feature Selection (Penyaringan Kolom)")
-st.markdown("Dari total 16 kolom mentah, hanya **8 fitur inti** yang diteruskan ke dalam arsitektur AI. Sisa kolom lainnya dieliminasi dengan alasan ilmiah berikut:")
 
+st.header("Pemilihan Algoritma Model")
 st.markdown("""
-- 🗑️ **`student_id`**: Memiliki kardinalitas terlalu tinggi (semua unik) dan tidak memiliki pola relasional.
-- 🗑️ **`age`, `gender`, `parental_education_level`**: Adalah faktor demografis bawaan. AI ini difokuskan pada analisis **Actionable Habits** (kebiasaan yang bisa diubah/diperbaiki oleh mahasiswa).
-- 🗑️ **`diet_quality`, `internet_quality`**: Di-drop untuk melakukan *Dimensionality Reduction* (mengurangi beban model) guna mencegah terjadinya *Overfitting* akibat terlalu banyak variabel yang kurang berkorelasi tajam dengan nilai akhir.
+Mengingat ini adalah data tabular terstruktur, arsitektur *Deep Learning/CNN* tidak digunakan karena terlalu berlebihan (*overkill*). 
+Sebagai gantinya, sistem ini memilih **Random Forest Regressor**. 
+
+Algoritma *Ensemble* ini dipilih karena sangat bagus untuk data tabular, kebal terhadap *outlier*, dan sangat tangguh dalam menangani berbagai skala data tanpa harus dinormalisasi secara ekstrem layaknya *Linear Regression*.
 """)
 
 st.markdown("---")
 
 
-st.header("Data Augmentation & Noise Injection")
+st.header("Evaluasi yang Digunakan")
+st.markdown("Karena berjalan di rute **Regresi**, metrik 'Akurasi' tradisional tidak relevan. Kinerja sistem diukur menggunakan metrik spesifik regresi:")
 
-col_aug1, col_aug2 = st.columns(2)
+col_ev1, col_ev2, col_ev3 = st.columns(3)
 
-with col_aug1:
-    st.markdown("Proses:")
-    st.code("""
-# 1. Re-sampling 100 data
-df_augmented = df.sample(n=100, replace=True)
+with col_ev1:
+    st.metric(label="Metrik 1", value="MAE")
+    st.caption("**Mean Absolute Error:** Rata-rata selisih prediksi tebakan AI dengan nilai aslinya di lapangan.")
 
-# 2. Injeksi Gaussian Noise ke Jam Belajar
-noise = np.random.uniform(-0.1, 0.1, size=100)
-df_augmented['study_hours_per_day'] += noise
+with col_ev2:
+    st.metric(label="Metrik 2", value="RMSE")
+    st.caption("**Root Mean Squared Error:** Memberikan hukuman (penalti) yang lebih besar untuk error/kesalahan prediksi yang jaraknya terlalu jauh.")
 
-# 3. Gabungkan
-df_final = pd.concat([df, df_augmented])
-    """, language='python')
+with col_ev3:
+    st.metric(label="Metrik 3", value="R-Squared")
+    st.caption("**R² Score:** Mengukur seberapa baik variabel independen (durasi belajar, sosmed, dll) mampu menjelaskan variasi dari skor ujian.")
 
-with col_aug2:
-    st.markdown("Hasil Akhir")
-    st.metric("Data Mentah", "1.000 Sampel")
-    st.metric("Data Sintetis", "+ 100 Sampel")
-    st.metric("Dataset Final AI", "1.100 Sampel ✅")
-    st.caption("Penambahan noise secara sengaja memaksa algoritma untuk melakukan generalisasi pola, bukan sekadar menghafal angka repetitif.")
+st.markdown("*(Hasil perhitungan metrik-metrik di atas dapat dilihat secara real-time pada menu Evaluasi Model).*")
