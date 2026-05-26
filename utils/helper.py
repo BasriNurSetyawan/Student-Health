@@ -7,23 +7,35 @@ from sklearn.model_selection import train_test_split
 def load_data():
     try:
         df = pd.read_csv('student_habits_performance.csv')
-        return df.dropna().drop_duplicates()
+        df = df.dropna().drop_duplicates()
+        
+        def kategori_olahraga(x):
+            if x <= 1:
+                return 'Buruk'   
+            elif x <= 3:
+                return 'Cukup'   
+            else:
+                return 'Baik'  
+        
+        df['kualitas_olahraga'] = df['exercise_frequency'].apply(kategori_olahraga)
+        
+        return df
     except FileNotFoundError:
         return None
 
 @st.cache_resource
 def train_model(df):
     features = ['study_hours_per_day', 'social_media_hours', 'netflix_hours', 
-                'attendance_percentage', 'sleep_hours', 'mental_health_rating']
+                'attendance_percentage', 'sleep_hours', 'mental_health_rating', 'exercise_frequency']
     
     X = df[features].copy()
-    y = df['exam_score'].copy()
+    y = df['exam_score'].copy() 
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     model = RandomForestRegressor(n_estimators=100, random_state=42, max_depth=5)
     model.fit(X_train, y_train)
-
+    
     akurasi = model.score(X_test, y_test)
     
     return model, features, akurasi
