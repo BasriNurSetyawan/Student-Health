@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from utils.helper import load_data, train_model
 
-st.set_page_config(page_title="Prediksi Skor Ujian", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Prediksi Nilai Ujian", page_icon="📈", layout="wide")
 
 df = load_data()
 model, features, accuracy = train_model(df)
@@ -19,12 +19,12 @@ with c_in1:
     p_attend = st.slider("Persentase Kehadiran (%)", 50.0, 100.0, 85.0)
 
 with c_in2:
-    p_sosmed = st.slider("Main Sosmed (Harian)", 0.0, 10.0, 2.5)
-    p_netflix = st.slider("Nonton Netflix (Harian)", 0.0, 8.0, 1.5)
-    p_exercise = st.slider("Olahraga (Kali/Minggu)", 0, 6, 2)
+    p_sosmed = st.slider("Main Sosmed (Harian)", 0.0, 10.0, 5.0)
+    p_netflix = st.slider("Nonton Netflix (Harian)", 0.0, 8.0, 2.5)
+    p_exercise = st.slider("Olahraga (Kali/Minggu)", 0, 6, 3)
     
 with c_in3:
-    p_sleep = st.slider("Jam Tidur Harian", 3.0, 12.0, 7.0)
+    p_sleep = st.slider("Jam Tidur Harian", 3.0, 12.0, 8.0)
     p_mental = st.slider("Mental Health (1-10)", 1, 10, 5)
 
 # EKSEKUSI AI
