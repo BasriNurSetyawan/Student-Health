@@ -2,25 +2,24 @@ import streamlit as st
 import pandas as pd
 from utils.helper import load_data
 
-st.set_page_config(page_title="Beranda - Burnout Analytics", page_icon="🏠", layout="wide")
+st.set_page_config(page_title="Beranda - Student Habits", page_icon="🏠", layout="wide")
 
 df = load_data()
 
 if df is None:
-    st.error("❌ Dataset 'student_mental_health_burnout.csv' tidak ditemukan di folder!")
+    st.error("❌ Dataset 'student_habits_performance.csv' tidak ditemukan!")
     st.stop()
 
-st.title("🎓 Sistem Analisis Mental Health & Burnout")
-st.markdown("Selamat datang! Dashboard ini dirancang khusus untuk memonitor tingkat kelelahan mental (Burnout) pada mahasiswa menggunakan data gaya hidup dan asesmen psikologis.")
+st.title("🎓 Analisis Kebiasaan & Performa Akademik Mahasiswa")
+st.markdown("Dashboard ini menganalisis bagaimana kebiasaan harian (tidur, sosmed, nonton Netflix) dan tingkat kehadiran berdampak pada **Nilai Ujian (Exam Score)** mahasiswa.")
 
-st.info("👈 Buka icon hamburger (☰) di pojok kiri atas untuk melihat visualisasi data dan mencoba Prediksi AI.")
 
-st.markdown("### 📌 Metrik Mahasiswa Saat Ini")
+st.markdown("### 📌 Ringkasan Data Saat Ini")
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
-kpi1.metric("Total Sampel", f"{len(df)} Data")
-kpi2.metric("Rerata Screen Time", f"{df['screen_time_hours'].mean():.1f} Jam")
-kpi3.metric("Rerata Kecemasan", f"{df['anxiety_score'].mean():.1f} / 10")
-kpi4.metric("Rerata Depresi", f"{df['depression_score'].mean():.1f} / 10")
+kpi1.metric("Total Sampel Tersedia", f"{len(df)} Mahasiswa")
+kpi2.metric("Rerata Nilai Ujian", f"{df['exam_score'].mean():.1f} / 100")
+kpi3.metric("Rerata Kehadiran", f"{df['attendance_percentage'].mean():.1f}%")
+kpi4.metric("Rerata Main Sosmed", f"{df['social_media_hours'].mean():.1f} Jam/Hari")
 
 st.markdown("---")
 st.markdown("### 📂 Preview Dataset Mentah")
