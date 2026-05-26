@@ -10,18 +10,23 @@ def load_data():
     try:
         df = pd.read_csv('student_habits_performance.csv')
         
+        # Isi data kosong
         df = df.ffill()
         
+        # Tambah 100 sampel data sintetis
         df_augmented = df.sample(n=100, replace=True, random_state=42).copy()
         df_augmented['study_hours_per_day'] = df_augmented['study_hours_per_day'] + np.random.uniform(-0.1, 0.1, size=100)
         df_augmented['study_hours_per_day'] = df_augmented['study_hours_per_day'].clip(lower=0)
         df = pd.concat([df, df_augmented], ignore_index=True)
         
+        # Gabung durasi sosmed & netflix
         df['total_screen_time'] = df['social_media_hours'] + df['netflix_hours']
-
+        
+        # Ubah teks Yes/No jadi angka 1/0
         kamus_yes_no = {'Yes': 1, 'No': 0}
         df['is_part_time'] = df['part_time_job'].map(kamus_yes_no)
         df['is_extracurricular'] = df['extracurricular_participation'].map(kamus_yes_no)
+
         
         def kategori_olahraga(x):
             if x <= 1: return 'Buruk'
