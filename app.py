@@ -33,7 +33,6 @@ with st.container():
         st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
-st.info("💡 **Panduan Navigasi:** Gunakan bilah menu di pojok kiri atas (☰) untuk berpindah halaman dan mengakses modul pengujian visual, simulasi prediktor AI, hingga laporan metodologi riset.")
 
 st.markdown("---")
 with st.expander("🔍 Buka Peninjau Dataset Bersih (Cleaned Data Preview)"):
