@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
 from utils.helper import load_data, train_model
 
 st.set_page_config(page_title="Prediksi AI", page_icon="📈", layout="wide")
@@ -49,21 +48,14 @@ else:
 res_col1, res_col2 = st.columns([1, 1])
 
 with res_col1:
-    fig = go.Figure(go.Indicator(
-        mode = "gauge+number",
-        value = pred,
-        number = {'suffix': " / 100", 'font': {'size': 36, 'color': bar_color}},
-        gauge = {
-            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#CBD5E1"},
-            'bar': {'color': bar_color},
-            'bgcolor': "white",
-            'borderwidth': 1,
-            'bordercolor': "#E5E7EB",
-            'steps': [{'range': [0, 100], 'color': "white"}]
-        }
-    ))
-    fig.update_layout(height=260, margin=dict(l=30, r=30, t=10, b=10))
-    st.plotly_chart(fig, use_container_width=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: center;'><h1 style='color: {bar_color}; font-size: 3.5rem; margin-bottom: 10px;'>{pred:.1f} <span style='font-size: 1.5rem; color: #9CA3AF;'>/ 100</span></h1></div>", unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div style="width: 100%; background-color: white; border: 1px solid #CBD5E1; border-radius: 12px; height: 32px; overflow: hidden; margin-top: 5px;">
+        <div style="width: {pred}%; background-color: {bar_color}; height: 100%; transition: width 0.5s ease-in-out;"></div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with res_col2:
     st.markdown("<br><br>", unsafe_allow_html=True)
