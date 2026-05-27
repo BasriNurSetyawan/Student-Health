@@ -34,15 +34,15 @@ st.markdown("<h3 style='text-align: center; color: #1E3A8A;'>🎯 Hasil Proyeksi
 
 if pred >= 85:
     bar_color = "#10B981"
-    status_text = "🏆 **Kategori: Sangat Memuaskan (A).** Kombinasi aktivitas harian dan kehadiran kelas berada dalam rentang ideal untuk mencapai prestasi puncak."
+    status_text = "🏆 **GACOR KANG** OTW CUMLAUDE"
     st_msg = st.success
 elif pred >= 65:
     bar_color = "#F59E0B"
-    status_text = "⚠️ **Kategori: Cukup (B/C).** Akumulasi skor aman, namun disarankan mengoptimalkan fokus dengan mereduksi durasi screen time harian."
+    status_text = "⚠️ **BAIK** Masih Amanlah"
     st_msg = st.warning
 else:
     bar_color = "#EF4444"
-    status_text = "🚨 **Kategori: Risiko Tinggi (D/E).** Konfigurasi kebiasaan harian ini sangat riskan dan berpotensi memicu kegagalan akademis."
+    status_text = "🚨 **TAKBIR!!** Gaya HIDUP SEPERTI LARRY🦞!!!"
     st_msg = st.error
 
 res_col1, res_col2 = st.columns([1, 1])
