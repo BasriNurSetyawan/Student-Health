@@ -1,5 +1,4 @@
 import streamlit as st
-import plotly.graph_objects as go
 from utils.helper import load_data, train_model
 
 st.set_page_config(page_title="Evaluasi Model", page_icon="📉", layout="wide")
@@ -23,41 +22,26 @@ c1, c2 = st.columns(2)
 with c1:
     st.markdown("<h4 style='text-align: center; color: #1E3A8A;'>R-Squared Accuracy (Data Uji)</h4>", unsafe_allow_html=True)
     color_r2 = get_metric_color(r2_pct)
-    fig_r2 = go.Figure(go.Indicator(
-        mode = "gauge+number",
-        value = r2_pct,
-        number = {'suffix': "%", 'font': {'size': 36, 'color': color_r2}},
-        gauge = {
-            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#CBD5E1"},
-            'bar': {'color': color_r2},
-            'bgcolor': "white",
-            'borderwidth': 1,
-            'bordercolor': "#E5E7EB",
-            'steps': [{'range': [0, 100], 'color': "white"}]
-        }
-    ))
-    fig_r2.update_layout(height=240, margin=dict(l=30, r=30, t=10, b=10))
-    st.plotly_chart(fig_r2, use_container_width=True)
+    
+    st.markdown(f"<div style='text-align: center;'><h1 style='color: {color_r2}; font-size: 3rem; margin-bottom: 10px;'>{r2_pct:.1f}%</h1></div>", unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="width: 100%; background-color: white; border: 1px solid #CBD5E1; border-radius: 10px; height: 24px; overflow: hidden; margin-top: 5px;">
+        <div style="width: {r2_pct}%; background-color: {color_r2}; height: 100%; transition: width 0.5s ease-in-out;"></div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with c2:
     st.markdown("<h4 style='text-align: center; color: #1E3A8A;'>5-Fold Cross Validation Mean</h4>", unsafe_allow_html=True)
     color_cv = get_metric_color(cv_pct)
-    fig_cv = go.Figure(go.Indicator(
-        mode = "gauge+number",
-        value = cv_pct,
-        number = {'suffix': "%", 'font': {'size': 36, 'color': color_cv}},
-        gauge = {
-            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#CBD5E1"},
-            'bar': {'color': color_cv},
-            'bgcolor': "white",
-            'borderwidth': 1,
-            'bordercolor': "#E5E7EB",
-            'steps': [{'range': [0, 100], 'color': "white"}]
-        }
-    ))
-    fig_cv.update_layout(height=240, margin=dict(l=30, r=30, t=10, b=10))
-    st.plotly_chart(fig_cv, use_container_width=True)
+    
+    st.markdown(f"<div style='text-align: center;'><h1 style='color: {color_cv}; font-size: 3rem; margin-bottom: 10px;'>{cv_pct:.1f}%</h1></div>", unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="width: 100%; background-color: white; border: 1px solid #CBD5E1; border-radius: 10px; height: 24px; overflow: hidden; margin-top: 5px;">
+        <div style="width: {cv_pct}%; background-color: {color_cv}; height: 100%; transition: width 0.5s ease-in-out;"></div>
+    </div>
+    """, unsafe_allow_html=True)
 
+st.markdown("<br><br>", unsafe_allow_html=True)
 st.markdown("---")
 st.markdown("### 📉 Parameter Loss & Nilai Galat (Error)")
 
