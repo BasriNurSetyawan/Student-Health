@@ -19,20 +19,20 @@ except FileNotFoundError:
 
 col_t1, col_t2 = st.columns(2)
 with col_t1:
-    st.markdown("<h4 style='color: #1E3A8A;'>1️⃣ Penentuan Variabel Target</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #1E3A8A;'>Penentuan Variabel Target</h4>", unsafe_allow_html=True)
     st.markdown("""
     Sistem menetapkan kolom **`exam_score`** sebagai variabel target. Pendekatan yang dipilih adalah **Regresi (Prediksi Nilai Kontinu)**, bukan Klasifikasi, 
     agar sistem mampu memproyeksikan angka pencapaian secara mutlak.
     """)
     
-    st.markdown("<h4 style='color: #1E3A8A;'>2️⃣ Strategi Pembersihan & Imputasi</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #1E3A8A;'>Strategi Pembersihan & Imputasi</h4>", unsafe_allow_html=True)
     st.markdown(f"""
     - **Fakta Data Mentah:** Ditemukan sebanyak **{missing_edu} data kosong (*null/NaN*)** pada kolom `parental_education_level`.
     - **Metode Penyelesaian:** Menggunakan teknik *Forward Fill Imputation* (`ffill`) untuk mengisi celah data kosong secara kontekstual, sehingga data awal tidak berkurang dan tetap utuh **1.000 baris sampel**.
     """)
 
 with col_t2:
-    st.markdown("<h4 style='color: #1E3A8A;'>3️⃣ Rekayasa Fitur & Label Encoding</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #1E3A8A;'>Rekayasa Fitur & Label Encoding</h4>", unsafe_allow_html=True)
     st.markdown("""
     - **Feature Elimination:** Kolom `student_id` dibuang (*drop*) karena memiliki nilai prediktif nol. Kolom demografi statis (seperti umur, gender, tingkat pendidikan orang tua) dilewati untuk menjaga efisiensi model dari *noise*.
     - **Feature Engineering:** Menggabungkan variabel distraksi harian (`social_media_hours` + `netflix_hours`) menjadi fitur tunggal yang padat informasi, yaitu **`total_screen_time`**.
@@ -40,8 +40,8 @@ with col_t2:
     """)
 
 st.markdown("---")
-st.markdown("<h4 style='color: #1E3A8A;'>4️⃣ Ekspansi Data & Suntikan Noise (Data Augmentation)</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='color: #1E3A8A;'>Ekspansi Data & Suntikan Noise (Data Augmentation)</h4>", unsafe_allow_html=True)
 st.markdown(f"""
 Untuk meningkatkan stabilitas model dan mematuhi batas aman analisis sampel, sistem mengalokasikan data sintetis tambahan sebanyak 100 baris menggunakan injeksi *Gaussian Noise* acak skala kecil pada fitur jam belajar. 
-- **Total Dataset Siap Latih Saat Ini:** **{len(df_clean)} Baris Sampel** ✅ *(Memenuhi syarat standardisasi).*
+- **Total Dataset Siap Latih Saat Ini:** **{len(df_clean)} Baris Sampel** ✅
 """)
