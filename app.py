@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
 from utils.helper import load_data
 
 st.set_page_config(page_title="Beranda", page_icon="🏠", layout="wide")
@@ -32,29 +31,20 @@ with col_metric:
 
 with col_gauge:
     st.markdown("<h4 style='text-align: center; color: #1E3A8A;'>Rerata Skor Ujian Keseluruhan</h4>", unsafe_allow_html=True)
-
+    
     if mean_score >= 85:
-        g_color = "#10B981"  
+        g_color = "#10B981" 
     elif mean_score >= 65:
-        g_color = "#F59E0B"  
+        g_color = "#F59E0B" 
     else:
-        g_color = "#EF4444"  
+        g_color = "#EF4444" 
         
-    fig = go.Figure(go.Indicator(
-        mode = "gauge+number",
-        value = mean_score,
-        number = {'suffix': " / 100", 'font': {'size': 36, 'color': g_color}},
-        gauge = {
-            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#CBD5E1"},
-            'bar': {'color': g_color},
-            'bgcolor': "white", 
-            'borderwidth': 1,
-            'bordercolor': "#E5E7EB",
-            'steps': [{'range': [0, 100], 'color': "white"}] 
-        }
-    ))
-    fig.update_layout(height=260, margin=dict(l=30, r=30, t=10, b=10))
-    st.plotly_chart(fig, use_container_width=True)
+    st.markdown(f"<div style='text-align: center;'><h1 style='color: {g_color}; font-size: 3rem; margin-bottom: 10px;'>{mean_score:.1f} <span style='font-size: 1.5rem; color: #9CA3AF;'>/ 100</span></h1></div>", unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="width: 100%; background-color: white; border: 1px solid #CBD5E1; border-radius: 12px; height: 28px; overflow: hidden; margin-top: 5px;">
+        <div style="width: {mean_score}%; background-color: {g_color}; height: 100%; transition: width 0.5s ease-in-out;"></div>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("---")
 with st.expander("🔍 Preview Dataset Bersih"):
